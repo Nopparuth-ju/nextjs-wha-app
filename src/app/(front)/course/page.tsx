@@ -1,5 +1,5 @@
 import FeaturesCourse from "@/components/features-course";
-import { getCourses } from "@/services/api-service";
+import { getCourses } from "@/services/api.service";
 
 // http://localhost:3000/course
 export default async function CoursePage() {
