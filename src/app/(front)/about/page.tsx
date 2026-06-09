@@ -1,10 +1,10 @@
 import Link from "next/link";
 import AppLoading from "../components/app-loading";
 import { Suspense } from "react";
+import { getApiVersion } from "@/services/api-service";
 
 async function ApiVersion() {
-  const response = await fetch('https://api.codingthailand.com/api/version');
-  const apiInfo = await response.json();
+  const apiInfo = await getApiVersion();
 
   return <p>API Version: {apiInfo.data.version}</p>;
 }

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Database ERD</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Mermaid.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            er: {
+                useMaxWidth: true
+            }
+        });
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Sarabun', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r header-gradient from-blue-700 to-indigo-800 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight">E-Commerce Entity-Relationship Diagram (ERD)</h1>
+                <p class="mt-1 text-sm text-blue-100">ผังโครงสร้างฐานข้อมูลร้านค้าออนไลน์ wha_ecommerce</p>
+            </div>
+            <div class="bg-white/10 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider text-blue-100">
+                MariaDB 11.8
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        
+        <!-- Tab / Toggle Section -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-8">
+            <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                <svg class="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                แผนภาพความสัมพันธ์ (Entity-Relationship Diagram)
+            </h2>
+            
+            <!-- ERD Diagram Render Area -->
+            <div class="bg-gray-100 p-4 rounded-xl border border-gray-200 overflow-auto flex justify-center">
+                <div class="mermaid w-full max-w-4xl bg-white p-6 rounded-lg shadow-inner">
+erDiagram
+    categories ||--o{ products : "has"
+    products ||--o{ product_images : "has"
+    customers ||--o{ orders : "places"
+    orders ||--|{ order_items : "contains"
+    products ||--o{ order_items : "is ordered in"
+
+    categories {
+        int id PK "Auto Increment"
+        varchar name "ชื่อหมวดหมู่สินค้า"
+    }
+    products {
+        int id PK "Auto Increment"
+        varchar name "ชื่อสินค้า"
+        text description "รายละเอียดสินค้า"
+        double price "ราคาสินค้า"
+        int category_id FK "หมวดหมู่สินค้า"
+    }
+    customers {
+        int id PK "Auto Increment"
+        varchar name "ชื่อ-นามสกุล"
+        varchar address "ที่อยู่จัดส่ง"
+        varchar phone "เบอร์โทรศัพท์"
+    }
+    orders {
+        int id PK "Auto Increment"
+        datetime date "วันที่สั่งซื้อ"
+        int customer_id FK "รหัสลูกค้า"
+        enum status "delivered, received, processing"
+        double total_amount "ราคารวม"
+    }
+    order_items {
+        int id PK "Auto Increment"
+        int order_id FK "รหัสการสั่งซื้อ"
+        int product_id FK "รหัสสินค้า"
+        int quantity "จำนวนสินค้า"
+        double price "ราคา ณ วันที่สั่งซื้อ"
+    }
+    product_images {
+        int id PK "Auto Increment"
+        int product_id FK "รหัสสินค้า"
+        text image_name "ชื่อไฟล์รูปภาพ"
+        timestamp created_at "สร้างเมื่อ"
+    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Dictionary -->
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <svg class="w-7 h-7 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+            พจนานุกรมข้อมูล (Data Dictionary)
+        </h2>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Table: categories -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-indigo-600 px-6 py-4 text-white flex justify-between items-center">
+                    <span class="font-bold text-lg font-mono">categories</span>
+                    <span class="text-xs bg-indigo-500 px-2.5 py-1 rounded-full font-medium">หมวดหมู่สินค้า</span>
+                </div>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Field</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Key</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono font-medium text-gray-900">id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-yellow-600 font-bold">PK (AI)</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">รหัสหมวดหมู่สินค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">name</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">VARCHAR(255)</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">ชื่อหมวดหมู่สินค้า เช่น สมาร์ทโฟน</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table: products -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-indigo-600 px-6 py-4 text-white flex justify-between items-center">
+                    <span class="font-bold text-lg font-mono">products</span>
+                    <span class="text-xs bg-indigo-500 px-2.5 py-1 rounded-full font-medium">รายการสินค้า</span>
+                </div>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Field</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Key</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono font-medium text-gray-900">id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-yellow-600 font-bold">PK (AI)</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">รหัสสินค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">name</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">VARCHAR(255)</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">ชื่อสินค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">description</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">TEXT</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">รายละเอียดสินค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">price</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">DOUBLE</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">ราคาสินค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">category_id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-blue-600 font-bold">FK</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">เชื่อมโยงไปยัง categories(id)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table: customers -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-indigo-600 px-6 py-4 text-white flex justify-between items-center">
+                    <span class="font-bold text-lg font-mono">customers</span>
+                    <span class="text-xs bg-indigo-500 px-2.5 py-1 rounded-full font-medium">ลูกค้า</span>
+                </div>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Field</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Key</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono font-medium text-gray-900">id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-yellow-600 font-bold">PK (AI)</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">รหัสลูกค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">name</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">VARCHAR(255)</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">ชื่อ-นามสกุลลูกค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">address</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">VARCHAR(500)</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">ที่อยู่จัดส่งของลูกค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">phone</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">VARCHAR(20)</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">เบอร์โทรศัพท์ติดต่อ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table: orders -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-indigo-600 px-6 py-4 text-white flex justify-between items-center">
+                    <span class="font-bold text-lg font-mono">orders</span>
+                    <span class="text-xs bg-indigo-500 px-2.5 py-1 rounded-full font-medium">คำสั่งซื้อ</span>
+                </div>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Field</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Key</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono font-medium text-gray-900">id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-yellow-600 font-bold">PK (AI)</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">รหัสคำสั่งซื้อ</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">date</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">DATETIME</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">วันที่และเวลาที่สั่งซื้อ</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">customer_id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-blue-600 font-bold">FK</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">เชื่อมโยงไปยัง customers(id)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">status</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">ENUM</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">สถานะ: 'delivered', 'received', 'processing'</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">total_amount</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">DOUBLE</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">ยอดเงินรวมในคำสั่งซื้อ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table: order_items -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-indigo-600 px-6 py-4 text-white flex justify-between items-center">
+                    <span class="font-bold text-lg font-mono">order_items</span>
+                    <span class="text-xs bg-indigo-500 px-2.5 py-1 rounded-full font-medium">รายการสินค้าในคำสั่งซื้อ</span>
+                </div>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Field</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Key</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono font-medium text-gray-900">id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-yellow-600 font-bold">PK (AI)</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">รหัสรายละเอียดสินค้าของคำสั่งซื้อ</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">order_id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-blue-600 font-bold">FK</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">เชื่อมโยงไปยัง orders(id) [ON DELETE CASCADE]</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">product_id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-blue-600 font-bold">FK</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">เชื่อมโยงไปยัง products(id)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">quantity</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">จำนวนที่สั่งซื้อ</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">price</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">DOUBLE</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">ราคาสินค้า ณ วันที่สั่งซื้อ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table: product_images -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-indigo-600 px-6 py-4 text-white flex justify-between items-center">
+                    <span class="font-bold text-lg font-mono">product_images</span>
+                    <span class="text-xs bg-indigo-500 px-2.5 py-1 rounded-full font-medium">รูปภาพสินค้า</span>
+                </div>
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Field</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Key</th>
+                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200 bg-white">
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono font-medium text-gray-900">id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-yellow-600 font-bold">PK (AI)</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">รหัสรูปภาพสินค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">product_id</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">INT</td>
+                            <td class="px-6 py-4 text-sm text-blue-600 font-bold">FK</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">เชื่อมโยงไปยัง products(id) [ON DELETE CASCADE]</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">image_name</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">TEXT</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">ชื่อไฟล์รูปภาพสินค้า</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-mono text-gray-900">created_at</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">TIMESTAMP</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">วันที่อัปโหลดรูปภาพ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-8 mt-16 border-t border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>© 2026 E-Commerce Database Management - Next Gen App Workshop</p>
+        </div>
+    </footer>
+
+</body>
+</html>
