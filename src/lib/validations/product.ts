@@ -8,3 +8,12 @@ export const createProductSchema = z.object({
 })
 
 export const updateProductSchema = createProductSchema.partial()
+
+export const productSchema = z.object({
+  name: z.string().min(1, "กรุณากรอกชื่อสินค้า"),
+  price: z.coerce.number().positive("ราคาต้องมากกว่า 0"),
+  categoryId: z.string().min(1, "กรุณาเลือกหมวดหมู่"),
+  description: z.string().optional(),
+})
+
+export type ProductFormValues = z.infer<typeof productSchema>
