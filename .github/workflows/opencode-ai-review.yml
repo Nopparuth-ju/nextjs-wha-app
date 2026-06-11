@@ -34,7 +34,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          model: deepseek/deepseek-v4-flash
+          model: google/gemini-1.5-flash
           use_github_token: true
           prompt: |
             Review this pull request.
