@@ -60,25 +60,26 @@ function RevenueChart({ data, loading, error, onRetry }: RevenueChartProps) {
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis
                 dataKey="date"
                 tick={{ fontSize: 12 }}
-                stroke="hsl(var(--muted-foreground))"
+                stroke="var(--muted-foreground)"
               />
               <YAxis
                 tick={{ fontSize: 12 }}
-                stroke="hsl(var(--muted-foreground))"
+                stroke="var(--muted-foreground)"
                 tickFormatter={(v: number) =>
                   v >= 1000 ? `${(v / 1000).toFixed(0)}K` : String(v)
                 }
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'hsl(var(--card))',
-                  border: '1px solid hsl(var(--border))',
+                  backgroundColor: 'var(--card)',
+                  border: '1px solid var(--border)',
                   borderRadius: '8px',
                   fontSize: '13px',
+                  color: 'var(--card-foreground)',
                 }}
                 formatter={(value) =>
                   new Intl.NumberFormat('th-TH', {
@@ -90,10 +91,10 @@ function RevenueChart({ data, loading, error, onRetry }: RevenueChartProps) {
               <Line
                 type="monotone"
                 dataKey="revenue"
-                stroke="hsl(var(--primary))"
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4 }}
+                stroke="#10b981"
+                strokeWidth={3}
+                dot={true}
+                activeDot={{ r: 6 }}
               />
             </LineChart>
           </ResponsiveContainer>
